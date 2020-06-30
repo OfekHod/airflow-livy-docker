@@ -2,6 +2,7 @@ from airflow import DAG
 from datetime import timedelta
 from airflow.utils.dates import days_ago
 from airflow.operators.bash_operator import BashOperator
+from airflow.operators.http_operator import SimpleHttpOperator
 
 default_args = {
     'owner': 'airflow',
@@ -26,3 +27,21 @@ t1 = BashOperator(
     bash_command='date',
     dag=dag,
 )
+
+
+def response_check(response):
+    return response.text != 'invalid response'
+
+t2 = SimpleHttpOperator(
+    dag=dag,
+    task_id="livy_batch",
+    method='POST',
+    endpoint='/batches',
+    http_conn_id="livy",
+    headers={"Content-Type": "application/json"},
+    data='{"className": "org.apache.spark.examples.SparkPi", "file": "/home/livy/spark-2.4.6-bin-hadoop2.7/examples/jars/spark-examples_2.11-2.4.6.jar"}',
+    log_response=True,
+    response_check=response_check
+)
+
+t3 =
