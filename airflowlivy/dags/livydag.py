@@ -35,7 +35,7 @@ def response_check(response):
 
 
 # airflow test livydag livy_batch 2020-06-06
-t2 = SimpleHttpOperator(
+livy_batch = SimpleHttpOperator(
     dag=dag,
     task_id="livy_batch",
     method='POST',
@@ -48,10 +48,18 @@ t2 = SimpleHttpOperator(
 )
 
 # airflow test livydag livy_batch_2 2020-06-06
-t3 = LivyOperator(
+livy_batch2 = LivyOperator(
     dag=dag,
     task_id="livy_batch_2",
     file="/home/livy/spark-2.4.6-bin-hadoop2.7/examples/jars/spark-examples_2.11-2.4.6.jar",
+    class_name="org.apache.spark.examples.SparkPi",
+    polling_interval=1
+)
+
+livy_batch_docker2 = LivyOperator(
+    dag=dag,
+    task_id="livy_batch_docker",
+    file="/opt/jars/spark-examples_2.11-2.4.6.jar",
     class_name="org.apache.spark.examples.SparkPi",
     polling_interval=1
 )

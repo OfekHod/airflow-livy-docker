@@ -1,3 +1,5 @@
 -c https://raw.githubusercontent.com/apache/airflow/1.10.10/requirements/requirements-python3.7.txt
 apache-airflow==1.10.10
 apache-airflow-backport-providers-apache-livy[http]
+pylint
+pylint-airflow
