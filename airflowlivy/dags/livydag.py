@@ -23,42 +23,9 @@ dag = DAG(
     schedule_interval=timedelta(days=1),
 )
 
-t1 = BashOperator(
-    task_id='print_date',
-    bash_command='date',
-    dag=dag,
-)
-
-
-def response_check(response):
-    return response.text != 'invalid response'
-
-
-# airflow test livydag livy_batch 2020-06-06
-livy_batch = SimpleHttpOperator(
+livy_batch = LivyOperator(
     dag=dag,
     task_id="livy_batch",
-    method='POST',
-    endpoint='/batches',
-    http_conn_id="livy",
-    headers={"Content-Type": "application/json"},
-    data='{"className": "org.apache.spark.examples.SparkPi", "file": "/home/livy/spark-2.4.6-bin-hadoop2.7/examples/jars/spark-examples_2.11-2.4.6.jar"}',
-    log_response=True,
-    response_check=response_check
-)
-
-# airflow test livydag livy_batch_2 2020-06-06
-livy_batch2 = LivyOperator(
-    dag=dag,
-    task_id="livy_batch_2",
-    file="/home/livy/spark-2.4.6-bin-hadoop2.7/examples/jars/spark-examples_2.11-2.4.6.jar",
-    class_name="org.apache.spark.examples.SparkPi",
-    polling_interval=1
-)
-
-livy_batch_docker2 = LivyOperator(
-    dag=dag,
-    task_id="livy_batch_docker",
     file="/opt/jars/spark-examples_2.11-2.4.6.jar",
     class_name="org.apache.spark.examples.SparkPi",
     polling_interval=1
